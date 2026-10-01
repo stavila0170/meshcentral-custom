@@ -68,7 +68,15 @@ def main():
         backup = CONFIG_FILE.with_name(
             f"config.json.bak-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
         )
-        shutil.copy2(CONFIG_FILE, backup)
+        try:
+            shutil.copy2(CONFIG_FILE, backup)
+        except PermissionError:
+            raise SystemExit(
+                "ERROR: No write permission in data/. This usually happens after Docker "
+                "created config.json as root. Run:\n"
+                "  sudo chown \"$USER\":\"$USER\" data data/config.json\n"
+                "and run this command again."
+            )
         print(f"Backup created: {backup}")
 
     CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -123,10 +131,17 @@ def main():
         }
     }
 
-    CONFIG_FILE.write_text(
-        json.dumps(config, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8"
-    )
+    try:
+        CONFIG_FILE.write_text(
+            json.dumps(config, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8"
+        )
+    except PermissionError:
+        raise SystemExit(
+            "ERROR: Cannot write data/config.json. Run:\n"
+            "  sudo chown \"$USER\":\"$USER\" data data/config.json\n"
+            "and run this command again."
+        )
 
     print(f"Generated: {CONFIG_FILE}")
     print(f"  cert/hostname : {hostname}")
