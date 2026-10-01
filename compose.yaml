@@ -71,13 +71,13 @@ services:
       - mongo
 
     ports:
-      - "4434:443"
-      - "4433:4433"
+      - "${MESHCENTRAL_HTTPS_PORT:-4434}:443"
+      - "${MESHCENTRAL_MPS_PORT:-4433}:4433"
 
     environment:
       NODE_ENV: production
+      DYNAMIC_CONFIG: "false"
       MINIFY: "false"
-      HOSTNAME: ${MESHCENTRAL_HOSTNAME}
 
     volumes:
       - ./data:/opt/meshcentral/meshcentral-data
