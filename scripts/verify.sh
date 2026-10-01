@@ -30,6 +30,17 @@ check "session timeline server command installed"   docker exec "$CONTAINER" sh 
 
 check "session timeline UI installed"   docker exec "$CONTAINER" sh -c "grep -R -q 'User Session State' /opt/meshcentral/meshcentral/views" || fail=1
 
+check "MongoDB configured"   docker exec "$CONTAINER" sh -c "grep -q '\"mongoDb\"' /opt/meshcentral/meshcentral-data/config.json" || fail=1
+
+if [ -f ".env" ]; then
+  set -a
+  . ./.env
+  set +a
+  if [ -n "${MESHCENTRAL_HOSTNAME:-}" ]; then
+    check "configured certificate hostname"       docker exec "$CONTAINER" sh -c "grep -q '\"cert\": \"${MESHCENTRAL_HOSTNAME}\"' /opt/meshcentral/meshcentral-data/config.json" || fail=1
+  fi
+fi
+
 if [ "$fail" -ne 0 ]; then
   echo
   echo "One or more checks failed."
