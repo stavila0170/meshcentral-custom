@@ -23,6 +23,7 @@ services:
     environment:
       NODE_ENV: production
       MINIFY: "false"
+      HOSTNAME: ${MESHCENTRAL_HOSTNAME}
     volumes:
       - ./data:/opt/meshcentral/meshcentral-data
       - ./files:/opt/meshcentral/meshcentral-files
