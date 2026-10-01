@@ -11,7 +11,12 @@ fi
 if [ ! -f ".env" ]; then
   cp .env.example .env
   echo "Created .env from .env.example."
-  echo "Edit .env and replace MONGO_PASSWORD before continuing."
+  echo "Edit .env and replace MESHCENTRAL_HOSTNAME and MONGO_PASSWORD before continuing."
+  exit 2
+fi
+
+if grep -q "CHANGE_ME_TO_SERVER_IP_OR_DNS" .env; then
+  echo "ERROR: Edit .env and set MESHCENTRAL_HOSTNAME to the IP address or DNS name used in your browser."
   exit 2
 fi
 
