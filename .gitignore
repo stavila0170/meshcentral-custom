@@ -1,0 +1,32 @@
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Persistent MeshCentral / database data
+data/
+db/
+files/
+backups/
+
+# Backups and local archives
+*.bak
+*.backup
+*.zip
+*.7z
+*.tar
+*.tar.gz
+
+# Runtime/log files
+*.log
+*.tmp
+
+# OS/editor metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
