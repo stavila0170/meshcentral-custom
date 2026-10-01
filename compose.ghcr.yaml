@@ -1,0 +1,35 @@
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: meshcentral-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - ./db:/data/db
+    networks:
+      - internal
+
+  meshcentral:
+    image: ghcr.io/stavila0170/meshcentral-custom:${MESHCENTRAL_CUSTOM_TAG:-latest}
+    container_name: meshcentral
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    ports:
+      - "4434:443"
+      - "4433:4433"
+    environment:
+      NODE_ENV: production
+      MINIFY: "false"
+    volumes:
+      - ./data:/opt/meshcentral/meshcentral-data
+      - ./files:/opt/meshcentral/meshcentral-files
+      - ./backups:/opt/meshcentral/meshcentral-backups
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
