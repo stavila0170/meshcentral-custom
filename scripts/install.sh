@@ -8,6 +8,11 @@ if ! command -v docker >/dev/null 2>&1; then
   exit 1
 fi
 
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "ERROR: python3 is required to generate data/config.json."
+  exit 1
+fi
+
 if [ ! -f ".env" ]; then
   cp .env.example .env
   echo "Created .env from .env.example."
@@ -26,6 +31,8 @@ if grep -q "CHANGE_ME_TO_A_LONG_RANDOM_PASSWORD" .env; then
 fi
 
 mkdir -p data db files backups
+
+python3 scripts/generate-config.py
 
 docker compose -f "$COMPOSE_FILE" pull
 docker compose -f "$COMPOSE_FILE" up -d
